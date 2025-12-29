@@ -1,34 +1,40 @@
-# Change Log
+# Changelog
 
-All notable changes to the "Smarty Formatter" extension will be documented in this file.
+All notable changes to the **Smarty Formatter** extension are documented in this file.
 
-## [2.1.2] - 2025-12-29
+This project is a **new, independent extension** with its own versioning history.
+
+---
+
+## [0.1.0] – 2025-12-29
+
+### Initial Release
+
+This is the first public release of **Smarty Formatter** as a standalone and community-maintained extension.
 
 ### Added
 
-- Enhanced formatting algorithm with improved tag wrapping logic
-- Support for `{component}` tags with dedicated snippet
-- Support for `{include_scoped}` tags with dedicated snippet
-- Support for `{sectionelse}` middle tag in formatting
-- Improved handling of multiline tag formatting
-- Enhanced logic tag detection (if, elseif, while)
-- Better indentation preservation for complex nested structures
+* Core Smarty-aware formatting engine with tag wrapping logic
+* Support for `{component}` and `{include_scoped}` snippets
+* Support for `{sectionelse}` middle tag handling
+* Multiline Smarty tag formatting support
+* Improved detection of logic tags (`if`, `elseif`, `while`)
+* Indentation preservation for nested Smarty structures
 
 ### Changed
 
-- Completely rewritten beautify.ts with advanced preprocessing and postprocessing
-- Improved syntax highlighting with better structure and readability
-- Enhanced language configuration with proper formatting
-- Updated logo with higher resolution (69KB)
-- Code refactoring for better maintainability
+* Initial implementation of the formatting pipeline (`beautify.ts`)
+* Language configuration tuned for formatting stability
+* Custom branding and extension icon
 
 ### Fixed
 
-- Fixed indentation issues in nested Smarty tags
-- Improved handling of HTML tags within Smarty templates
-- Better preservation of whitespace in formatted code
-- Fixed wrapping behavior for long tags
+* Indentation issues in nested Smarty blocks
+* Formatting inconsistencies in mixed HTML and Smarty templates
 
-## Previous Versions
+---
 
-See git history for earlier changes.
+## Previous history
+
+No previous versions exist prior to `0.1.0`.
+Earlier experimentation and refactoring can be found in the Git commit history.
