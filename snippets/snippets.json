@@ -125,11 +125,23 @@
 		"description": "",
 		"reference": ""
 	},
+	"component": {
+		"prefix": "component",
+		"body": "{component file=\"${1:file}\"${3: ${2:var1}=${4:value}}}$0",
+		"description": "{component} tags are used for including components in the current template.",
+		"reference": ""
+	},
 	"include": {
 		"prefix": "include",
 		"body": "{include file=\"${1:file}\"${3: assign=${2:name}}${6: ${4:var1}=${5:value}}}$0",
 		"description": "{include} tags are used for including other templates in the current template.",
 		"reference": "language.function.include.tpl"
+	},
+	"include_scoped": {
+		"prefix": "include_scoped",
+		"body": "{include_scoped file=\"${1:file}\"${3: assign=${2:name}}${6: ${4:var1}=${5:value}}}$0",
+		"description": "{include_scoped} tags are used for including other templates in the current template with a scoped context.",
+		"reference": ""
 	},
 	"literal": {
 		"prefix": "literal",
