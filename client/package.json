@@ -1,7 +1,7 @@
 {
-	"name": "smarty-formatter",
-	"displayName": "Smarty Formatter",
-	"description": "Smarty template support with formatting, folding, snippets, syntax highlighting and more",
+	"name": "tpl-formatter",
+	"displayName": "TPL Formatter for Smarty Template Engine",
+	"description": "TPL Formatter for Smarty Template Engine with formatting, folding, snippets, syntax highlighting and more",
 	"author": {
 		"name": "Aswin Kumar",
 		"email": "aswinkumar863@gmail.com"
@@ -10,7 +10,7 @@
 	"publisher": "aswinkumar863",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/aswinkumar863/smarty-formatter.git"
+		"url": "https://github.com/aswinkumar863/tpl-formatter.git"
 	},
 	"engines": {
 		"vscode": "^1.43.0"
