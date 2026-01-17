@@ -283,13 +283,22 @@ export class BeautifySmarty {
 			const tagMatch = trimmed.match(/^({+)\s*(\w+)\s+(.*)(}+)$/);
 			if (tagMatch) {
 				const [_, leftBraces, tagName, content, rightBraces] = tagMatch;
-				if (this.wrapTags.has(tagName)) {
+				// Determine if we should treat this as an attribute-based tag
+                // If it is in wrapTags OR it contains an array definition and is NOT a logic tag
+                const hasArray = content.includes('[') && content.includes(']');
+                const isAttributeTag = this.wrapTags.has(tagName) || (hasArray && !this.logicTags.has(tagName) && tagName !== 'literal');
+
+				if (isAttributeTag) {
 					const attrs = this.parseAttributes(content);
-                    console.log(`Attrs found: ${attrs.length}`);
-					if (line.length > wrapLineLength || attrs.length > 3) {
+                   
+                   // Check if forced wrap due to array or length
+                   const arrayAttrs = attrs.filter(a => a.match(/=\s*\[/));
+				   if (line.length > wrapLineLength || attrs.length > 3 || arrayAttrs.length > 0) {
 						newLines.push(`${indent}${leftBraces}${tagName}`);
 						for (const attr of attrs) {
-							newLines.push(`${indent}${indent_char}${attr}`);
+                            // Use new formatter for potential arrays
+                            const formattedLines = this.formatAttributeValue(attr, indent + indent_char, indent_char);
+                            newLines.push(...formattedLines);
 						}
 						newLines.push(`${indent}${rightBraces}`);
 						continue;
@@ -352,6 +361,73 @@ export class BeautifySmarty {
 		const m = trimmed.match(/^{{?\s*(\w+)/);
 		return m !== null && this.tags.middle.has(m[1]);
 	}
+
+	private splitSmartyArray(content: string): string[] {
+		const parts: string[] = [];
+		let currentPart = "";
+		let i = 0;
+		let bracketDepth = 0;
+		let parenDepth = 0;
+        let braceDepth = 0;
+		let quote = null;
+
+		while (i < content.length) {
+			const char = content[i];
+			if (quote) {
+				if (char === quote && content[i - 1] !== '\\') quote = null;
+				currentPart += char;
+			} else {
+				if (char === '"' || char === "'") quote = char;
+				else if (char === '[') bracketDepth++;
+				else if (char === ']') bracketDepth--;
+				else if (char === '(') parenDepth++;
+				else if (char === ')') parenDepth--;
+                else if (char === '{') braceDepth++;
+                else if (char === '}') braceDepth--;
+				
+				if (char === ',' && bracketDepth === 0 && parenDepth === 0 && braceDepth === 0) {
+					parts.push(currentPart.trim());
+					currentPart = "";
+				} else {
+					currentPart += char;
+				}
+			}
+			i++;
+		}
+		if (currentPart.trim()) parts.push(currentPart.trim());
+		return parts;
+	}
+
+    private formatAttributeValue(attr: string, indent: string, indent_char: string): string[] {
+        // Check if attribute is an array: key=[...] or just [...]
+        // Regex to verify it ends with ] and has = followed by [
+        const match = attr.match(/^([^=]+=\s*)\[([\s\S]*)\]$/);
+        
+        if (!match) {
+            return [`${indent}${attr}`];
+        }
+
+        const prefix = match[1]; // key=
+        const content = match[2]; // inner content
+        
+        const elements = this.splitSmartyArray(content);
+        if (elements.length === 0) return [`${indent}${attr}`];
+
+        const lines: string[] = [];
+        lines.push(`${indent}${prefix}[`);
+        
+        for (let i = 0; i < elements.length; i++) {
+            const el = elements[i];
+            const isLast = i === elements.length - 1;
+            // Add comma if not last? Smarty arrays need commas between elements.
+            // splitSmartyArray consumes the comma.
+            const suffix = isLast ? "" : ",";
+            lines.push(`${indent}${indent_char}${el}${suffix}`);
+        }
+        
+        lines.push(`${indent}]`);
+        return lines;
+    }
 
 	private parseAttributes(content: string): string[] {
 		const attrs: string[] = [];
