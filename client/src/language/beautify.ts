@@ -218,10 +218,19 @@ export class BeautifySmarty {
 						if (!trimmed.endsWith('}') && !trimmed.endsWith('}}')) {
 							// Already handled by multiline logic above
 						} else {
-                            if (insideHtmlTagAttributes) {
-                                attrIndentLevel++;
-                            } else {
-							    indentStack.push(currentIndent);
+							// Check if it's a structural tag like {if ...} on one line
+                            // CRITICAL FIX: Ensure we don't push if the tag is closed on the same line!
+                            // e.g. {if $cond}val{/if}
+                            const tagName = startTagMatch[1];
+                            const closingRegex = new RegExp(`{{?\\s*\\/${tagName}\\s*}}?$`);
+                            const isClosedOnSameLine = trimmed.match(closingRegex);
+
+                            if (!isClosedOnSameLine) {
+                                if (insideHtmlTagAttributes) {
+                                    attrIndentLevel++;
+                                } else {
+                                    indentStack.push(currentIndent);
+                                }
                             }
 						}
 					}
